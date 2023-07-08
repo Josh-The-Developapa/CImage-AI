@@ -11,23 +11,41 @@ function App() {
   const [fileErr, setFileErr] = React.useState();
   const inputRef = React.useRef();
 
-  //convert hex string to rgb colour (got from Chat-GPT 😂)
+  // React.useEffect(() => {
+  //   const localStorageColor = localStorage.getItem('bg-colour');
+  //   if (!localStorageColor) {
+  //     setBG('#2c2c2c');
+  //     localStorage.setItem('bg-colour', bg);
+  //   } else {
+  //     setBG(localStorageColor);
+  //   }
+  // }, []);
+
+
+  //convert hex string to rgb colour (got from Chat-GPT ðŸ˜‚)
   function hexToRgb(hex) {
     // Expand shorthand hexadecimal form (e.g. "03F") to full form (e.g. "0033FF")
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+
+    if (hex == null) {
+      return null;
+    }
     hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
 
     // Parse the hexadecimal string into an object with r, g, and b properties
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
+    return {
       r: parseInt(result[1], 16),
       g: parseInt(result[2], 16),
       b: parseInt(result[3], 16)
-    } : null;
+    };
   }
 
-  //function to determine whether colour inputed is too dark or light (got from Chat-GPT 😂)
+  //function to determine whether colour inputed is too dark or light (got from Chat-GPT ðŸ˜‚)
   function isLightHexColor(hexColor) {
+    if (!hexColor) {
+      hexColor = "#004d65";
+    }
     // Convert the hex color string to an RGB color object
     const color = hexToRgb(hexColor);
 
@@ -42,8 +60,8 @@ function App() {
   }
 
   return (
-    <div className='outerContainer' style={{ backgroundColor: localStorage.getItem('bg-colour') }}>
-      <h1 style={{ color: isLightHexColor(localStorage.getItem('bg-colour')) ? 'black' : 'white', marginBottom: '10px' }}>Mr.CImage</h1>
+    <div className='outerContainer' style={{ backgroundColor: localStorage.getItem('bg-colour') ? localStorage.getItem('bg-colour') : '#004d65' }}>
+      <h1 style={{ color: isLightHexColor(localStorage.getItem('bg-colour')) ? 'black' : 'white', marginBottom: '10px' }}>WhiskerWoof</h1>
       <div className="imageContainer">
         {image ? <motion.img
           className="img"
@@ -70,7 +88,7 @@ function App() {
             }
           }} ref={inputRef} name='my-file' />
         </Form.Group>
-        <div className='innerDiv'> <button style={{ backgroundColor: localStorage.getItem('bg-colour'), color: isLightHexColor(localStorage.getItem('bg-colour')) ? 'black' : 'white' }} onClick={() => {
+        <div className='innerDiv'> <button style={{ backgroundColor: localStorage.getItem('bg-colour') ? localStorage.getItem('bg-colour') : "#004d65", color: isLightHexColor(localStorage.getItem('bg-colour')) ? 'black' : 'white' }} onClick={() => {
           if (inputRef.current.files[0]) {
             // Get the file input field
             const input = document.querySelector('input[type="file"]');
@@ -102,7 +120,7 @@ function App() {
           <Form.Control
             type="color"
             id="exampleColorInput"
-            defaultValue={localStorage.getItem('bg-colour')}
+            defaultValue={localStorage.getItem('bg-colour') ? localStorage.getItem('bg-colour') : "#004d65"}
             title="Choose your color"
             onChange={(e) => {
               //For elements with background set to 'bg-colour' in local stroage, a state update is needed for it to take effect
